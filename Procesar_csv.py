@@ -18,9 +18,9 @@ DASHBOARD = RAIZ / "03_dashboard"
 COLUMNAS = [
     'est_nie', 'est_nombre1', 'est_nombre2', 'est_nombre3',
     'est_apellido1', 'est_apellido2', 'est_apellido3',
-    'gra_nombre', 'CÓDIGO_CE', 'NOMBRE_CE', 'SECTOR'
+    'GRADO_RECOD_BTO', 'CÓDIGO_CE', 'NOMBRE_CE', 'SECTOR',
+    'DEPTO_CE', 'NOMBRE_MUNICIPIO_CE', 'NOMBRE_DISTRITO_CE', 'DIRECCIÓN_CE'
 ]
-
 
 def extraer_fecha(nombre_archivo):
     match = re.search(r'_al_(\d{8})_normalizado', nombre_archivo)
@@ -28,7 +28,6 @@ def extraer_fecha(nombre_archivo):
         fecha_str = match.group(1)
         return datetime.strptime(fecha_str, "%d%m%Y")
     return None
-
 
 def cargar_archivos():
     root = tk.Tk()
@@ -78,7 +77,6 @@ def cargar_archivos():
 
     return Path(ruta_actual), ruta_anterior, fecha_str_iso
 
-
 def procesar_datos(ruta_actual, ruta_anterior):
     print("\nCargando archivo actual...")
     df_actual = pd.read_csv(ruta_actual, usecols=COLUMNAS, dtype=str, encoding='utf-8', low_memory=False)
@@ -99,7 +97,8 @@ def procesar_datos(ruta_actual, ruta_anterior):
         return total_actual, total_publico, total_privado, None, None
 
     print("\nCargando archivo anterior para comparación...")
-    df_anterior = pd.read_csv(ruta_anterior, usecols=['est_nie', 'CÓDIGO_CE', 'NOMBRE_CE', 'SECTOR'], dtype=str, encoding='utf-8', low_memory=False)
+    cols_anterior = ['est_nie', 'CÓDIGO_CE', 'NOMBRE_CE', 'SECTOR', 'DEPTO_CE', 'NOMBRE_MUNICIPIO_CE', 'NOMBRE_DISTRITO_CE', 'DIRECCIÓN_CE']
+    df_anterior = pd.read_csv(ruta_anterior, usecols=cols_anterior, dtype=str, encoding='utf-8', low_memory=False)
 
     df_nuevos = df_actual[~df_actual['est_nie'].isin(df_anterior['est_nie'])].copy()
     print(f"Nuevos ingresos detectados: {len(df_nuevos)}")
@@ -109,7 +108,6 @@ def procesar_datos(ruta_actual, ruta_anterior):
     print(f"Cambios de centro detectados: {len(df_cambios)}")
 
     return total_actual, total_publico, total_privado, df_cambios, df_nuevos
-
 
 def exportar_json(fecha_str, total_actual, total_publico, total_privado, df_cambios, df_nuevos):
     DASHBOARD.mkdir(parents=True, exist_ok=True)
@@ -162,18 +160,18 @@ def exportar_json(fecha_str, total_actual, total_publico, total_privado, df_camb
     print(f"\nArchivos JSON actualizados exitosamente en: {DASHBOARD}")
 
 def sincronizar_con_github():
-    print("\n🔄 Sincronizando con GitHub (vía Git local)...")
+    print("\nSincronizando con GitHub (vía Git local)...")
     try:
         repo_path = str(RAIZ)
         subprocess.run(["git", "-C", repo_path, "add", "."], check=True)
         mensaje_commit = f"Actualización automática de JSON {datetime.now().strftime('%Y-%m-%d %H:%M')}"
         subprocess.run(["git", "-C", repo_path, "commit", "-m", mensaje_commit], check=True)
         subprocess.run(["git", "-C", repo_path, "push"], check=True)
-        print("✅ ¡Todos los datos subidos exitosamente a GitHub!")
+        print("Datos subidos exitosamente a GitHub")
     except subprocess.CalledProcessError as e:
-        print(f"❌ Error al ejecutar comando Git: {e}")
+        print(f"Error al ejecutar comando Git: {e}")
     except Exception as e:
-        print(f"❌ Error inesperado al sincronizar con GitHub: {e}")
+        print(f"Error inesperado al sincronizar con GitHub: {e}")
 
 if __name__ == "__main__":
     actual, anterior, fecha_str = cargar_archivos()
