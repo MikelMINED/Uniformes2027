@@ -1,5 +1,15 @@
 [
   {
+    "fecha": "2026-11-13",
+    "total": 1247926,
+    "publico": 1091471,
+    "privado": 156455,
+    "cambios": 0,
+    "nuevos": 0,
+    "tallados": 1001134,
+    "no_tallados": 246792
+  },
+  {
     "fecha": "2026-11-06",
     "total": 1247926,
     "publico": 1091471,

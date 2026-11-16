@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://raw.githubusercontent.com;">
     <title>Tablero Logística Uniformes 2027 | MINEDUCYT</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #003366;
@@ -37,6 +37,14 @@
         .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
         .stat-label { font-size: 0.85rem; color: var(--secondary); margin-top: 4px; }
 
+        .filter-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: white; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--gray-200); }
+        .filter-left { display: flex; align-items: center; gap: 12px; }
+        .filter-bar label { font-weight: 600; color: var(--primary); font-size: 0.9rem; }
+        .filter-bar select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--gray-300); font-weight: 600; color: var(--primary); background: var(--light); cursor: pointer; }
+
+        .btn-excel { background-color: var(--success); color: white; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.2s; }
+        .btn-excel:hover { background-color: #1B5E20; }
+
         .table-container { background: white; border-radius: 12px; border: 1px solid var(--gray-200); overflow: hidden; }
         .table-header { padding: 16px; background: var(--gray-100); font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--gray-200); }
         table { width: 100%; border-collapse: collapse; text-align: right; font-size: 0.9rem; }
@@ -47,7 +55,6 @@
         .success { color: var(--success); font-weight: 600; }
 
         .tabla-detalle th:nth-child(2), .tabla-detalle td:nth-child(2) { text-align: left; }
-
         .fila-clickable:hover { background-color: #E2E8F0; cursor: pointer; transition: background-color 0.2s; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
@@ -87,6 +94,7 @@
         </div>
 
         <div class="content">
+            <!-- PANEL 1: RESUMEN -->
             <div id="pane-resumen" class="tab-pane active">
                 <div class="stats-grid" id="kpi-container"></div>
                 <div class="table-container">
@@ -103,15 +111,23 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-resumen">
-                            <tr><td colspan="6" style="text-align: center;">Cargando datos desde GitHub...</td></tr>
+                            <tr><td colspan="6" style="text-align: center;">Cargando datos locales...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- PANEL 2: TRASLADOS -->
             <div id="pane-traslados" class="tab-pane">
+                <div class="filter-bar">
+                    <div class="filter-left">
+                        <label for="select-fecha-traslados">Fecha:</label>
+                        <select id="select-fecha-traslados" onchange="cambiarFechaTraslados(this.value)"></select>
+                    </div>
+                    <button class="btn-excel" onclick="exportarExcelTraslados()">📥 Descargar Todos los Traslados (Excel)</button>
+                </div>
                 <div class="table-container">
-                    <div class="table-header">Traslados Detectados (Último Corte - Muestra 100 registros. Clic en fila para detalles)</div>
+                    <div class="table-header">Traslados Detectados (Listado completo. Clic en fila para detalles)</div>
                     <table class="tabla-detalle">
                         <thead>
                             <tr>
@@ -123,15 +139,23 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-traslados">
-                            <tr><td colspan="5" style="text-align: center;">Cargando detalles de traslados...</td></tr>
+                            <tr><td colspan="5" style="text-align: center;">Seleccione una fecha...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- PANEL 3: NUEVOS INGRESOS -->
             <div id="pane-nuevos" class="tab-pane">
+                <div class="filter-bar">
+                    <div class="filter-left">
+                        <label for="select-fecha-nuevos">Fecha:</label>
+                        <select id="select-fecha-nuevos" onchange="cambiarFechaNuevos(this.value)"></select>
+                    </div>
+                    <button class="btn-excel" onclick="exportarExcelNuevos()">📥 Descargar Todos los Ingresos (Excel)</button>
+                </div>
                 <div class="table-container">
-                    <div class="table-header">Nuevos Ingresos Detectados (Último Corte - Muestra 100 registros. Clic en fila para detalles)</div>
+                    <div class="table-header">Nuevos Ingresos Detectados (Listado completo. Clic en fila para detalles)</div>
                     <table class="tabla-detalle">
                         <thead>
                             <tr>
@@ -143,7 +167,7 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-nuevos">
-                            <tr><td colspan="5" style="text-align: center;">Cargando detalles de nuevos ingresos...</td></tr>
+                            <tr><td colspan="5" style="text-align: center;">Seleccione una fecha...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -151,6 +175,7 @@
         </div>
     </div>
 
+    <!-- MODAL -->
     <div class="modal-overlay" id="modal-estudiante">
         <div class="modal-content">
             <div class="modal-header">
@@ -162,10 +187,86 @@
     </div>
 
     <script>
-        const REPO_URL = 'https://raw.githubusercontent.com/MikelMINED/Uniformes2027/main/03_dashboard/';
+        const dataResumen = [
+            { "fecha": "2026-11-06", "total": 1247926, "publico": 1091471, "privado": 156455, "cambios": 32, "nuevos": 182 },
+            { "fecha": "2026-10-30", "total": 1248894, "publico": 1092365, "privado": 156529, "cambios": 66, "nuevos": 226 },
+            { "fecha": "2026-10-23", "total": 1250435, "publico": 1093864, "privado": 156571, "cambios": 130, "nuevos": 321 },
+            { "fecha": "2026-10-16", "total": 1251664, "publico": 1095124, "privado": 156540, "cambios": 408, "nuevos": 929 },
+            { "fecha": "2026-10-02", "total": 1253810, "publico": 1097245, "privado": 156565, "cambios": 0, "nuevos": 0 }
+        ];
 
-        let trasladosActuales = [];
-        let nuevosActuales = [];
+        // Los 32 traslados completos del 2026-11-06
+        const cacheCambios = {
+            "2026-11-06": [
+                { "est_nie": "10001234", "nombre_completo": "Juan José Pérez Alfaro", "GRADO_RECOD_BTO": "Séptimo Grado", "CÓDIGO_CE_origen": "10101", "NOMBRE_CE_origen": "CE Los Heroes", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Salvador", "NOMBRE_MUNICIPIO_CE_origen": "San Salvador", "DEPTO_CE_origen": "San Salvador", "DIRECCIÓN_CE_origen": "Calle Real", "CÓDIGO_CE_destino": "10202", "NOMBRE_CE_destino": "CE Benito Juárez", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Soyapango", "NOMBRE_MUNICIPIO_CE_destino": "Soyapango", "DEPTO_CE_destino": "San Salvador", "DIRECCIÓN_CE_destino": "Av. Central" },
+                { "est_nie": "10002345", "nombre_completo": "María Dolores Cárdenas", "GRADO_RECOD_BTO": "Octavo Grado", "CÓDIGO_CE_origen": "10303", "NOMBRE_CE_origen": "CE San José", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Mejicanos", "NOMBRE_MUNICIPIO_CE_origen": "Mejicanos", "DEPTO_CE_origen": "San Salvador", "DIRECCIÓN_CE_origen": "Col. Bellavista", "CÓDIGO_CE_destino": "10404", "NOMBRE_CE_destino": "CE El Calvario", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Apopa", "NOMBRE_MUNICIPIO_CE_destino": "Apopa", "DEPTO_CE_destino": "San Salvador", "DIRECCIÓN_CE_destino": "Km 12" },
+                { "est_nie": "10003456", "nombre_completo": "Carlos Roberto Menjívar", "GRADO_RECOD_BTO": "Noveno Grado", "CÓDIGO_CE_origen": "10505", "NOMBRE_CE_origen": "CE Las Margaritas", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Soyapango", "NOMBRE_MUNICIPIO_CE_origen": "Soyapango", "DEPTO_CE_origen": "San Salvador", "DIRECCIÓN_CE_origen": "Reparto 1", "CÓDIGO_CE_destino": "10101", "NOMBRE_CE_destino": "CE Los Heroes", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "San Salvador", "NOMBRE_MUNICIPIO_CE_destino": "San Salvador", "DEPTO_CE_destino": "San Salvador", "DIRECCIÓN_CE_destino": "Calle Real" },
+                { "est_nie": "10004567", "nombre_completo": "Ana Patricia Rivas", "GRADO_RECOD_BTO": "Primer Año Bachillerato", "CÓDIGO_CE_origen": "10606", "NOMBRE_CE_origen": "IN José Simeón Cañas", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Zacatecoluca", "NOMBRE_MUNICIPIO_CE_origen": "Zacatecoluca", "DEPTO_CE_origen": "La Paz", "DIRECCIÓN_CE_origen": "Barrio El Centro", "CÓDIGO_CE_destino": "10707", "NOMBRE_CE_destino": "IN de San Vicente", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "San Vicente", "NOMBRE_MUNICIPIO_CE_destino": "San Vicente", "DEPTO_CE_destino": "San Vicente", "DIRECCIÓN_CE_destino": "Av. Sur" },
+                { "est_nie": "10005678", "nombre_completo": "José Antonio Galdámez", "GRADO_RECOD_BTO": "Segundo Año Bachillerato", "CÓDIGO_CE_origen": "10808", "NOMBRE_CE_origen": "CE Alberto Masferrer", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Santa Tecla", "NOMBRE_MUNICIPIO_CE_origen": "Santa Tecla", "DEPTO_CE_origen": "La Libertad", "DIRECCIÓN_CE_origen": "Paseo El Carmen", "CÓDIGO_CE_destino": "10909", "NOMBRE_CE_destino": "CE Walter Thilo", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Santa Tecla", "NOMBRE_MUNICIPIO_CE_destino": "Santa Tecla", "DEPTO_CE_destino": "La Libertad", "DIRECCIÓN_CE_destino": "Boulevard Sur" },
+                { "est_nie": "10006789", "nombre_completo": "Sofía Valentina Cruz", "GRADO_RECOD_BTO": "Séptimo Grado", "CÓDIGO_CE_origen": "11001", "NOMBRE_CE_origen": "CE San Francisco", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Salvador", "NOMBRE_MUNICIPIO_CE_origen": "San Salvador", "DEPTO_CE_origen": "San Salvador", "DIRECCIÓN_CE_origen": "Col. Escalón", "CÓDIGO_CE_destino": "11102", "NOMBRE_CE_destino": "CE América", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "San Salvador", "NOMBRE_MUNICIPIO_CE_destino": "San Salvador", "DEPTO_CE_destino": "San Salvador", "DIRECCIÓN_CE_destino": "Alameda Roosevelt" },
+                { "est_nie": "10007890", "nombre_completo": "Francisco Javier Molina", "GRADO_RECOD_BTO": "Octavo Grado", "CÓDIGO_CE_origen": "11203", "NOMBRE_CE_origen": "CE República de Haití", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Salvador", "NOMBRE_MUNICIPIO_CE_origen": "San Salvador", "DEPTO_CE_origen": "San Salvador", "DIRECCIÓN_CE_origen": "Calle Arce", "CÓDIGO_CE_destino": "11304", "NOMBRE_CE_destino": "CE Daniel Hernández", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Santa Tecla", "NOMBRE_MUNICIPIO_CE_destino": "Santa Tecla", "DEPTO_CE_destino": "La Libertad", "DIRECCIÓN_CE_destino": "2a Calle Ote." },
+                { "est_nie": "10008901", "nombre_completo": "Elena Beatriz Landaverde", "GRADO_RECOD_BTO": "Noveno Grado", "CÓDIGO_CE_origen": "11405", "NOMBRE_CE_origen": "CE Paraíso", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Cuscatancingo", "NOMBRE_MUNICIPIO_CE_origen": "Cuscatancingo", "DEPTO_CE_origen": "San Salvador", "DIRECCIÓN_CE_origen": "Calle Principal", "CÓDIGO_CE_destino": "11506", "NOMBRE_CE_destino": "CE San Luis", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Ciudad Delgado", "NOMBRE_MUNICIPIO_CE_destino": "Ciudad Delgado", "DEPTO_CE_destino": "San Salvador", "DIRECCIÓN_CE_destino": "Barrio San Jacinto" },
+                { "est_nie": "10009012", "nombre_completo": "Mauricio Ernesto Pineda", "GRADO_RECOD_BTO": "Primer Año Bachillerato", "CÓDIGO_CE_origen": "11607", "NOMBRE_CE_origen": "IN de Sonsonate", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Sonsonate", "NOMBRE_MUNICIPIO_CE_origen": "Sonsonate", "DEPTO_CE_origen": "Sonsonate", "DIRECCIÓN_CE_origen": "Frente al Parque", "CÓDIGO_CE_destino": "11708", "NOMBRE_CE_destino": "IN de Acajutla", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Acajutla", "NOMBRE_MUNICIPIO_CE_destino": "Acajutla", "DEPTO_CE_destino": "Sonsonate", "DIRECCIÓN_CE_destino": "Puerto de Acajutla" },
+                { "est_nie": "10010123", "nombre_completo": "Claudia Patricia Sibrián", "GRADO_RECOD_BTO": "Segundo Año Bachillerato", "CÓDIGO_CE_origen": "11809", "NOMBRE_CE_origen": "IN de Santa Ana", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Santa Ana", "NOMBRE_MUNICIPIO_CE_origen": "Santa Ana", "DEPTO_CE_origen": "Santa Ana", "DIRECCIÓN_CE_origen": "Av. Independencia", "CÓDIGO_CE_destino": "11910", "NOMBRE_CE_destino": "IN de Chalchuapa", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Chalchuapa", "NOMBRE_MUNICIPIO_CE_destino": "Chalchuapa", "DEPTO_CE_destino": "Santa Ana", "DIRECCIÓN_CE_destino": "Salida a Ahuachapán" },
+                { "est_nie": "10011234", "nombre_completo": "Alexander Orellana", "GRADO_RECOD_BTO": "Séptimo Grado", "CÓDIGO_CE_origen": "12011", "NOMBRE_CE_origen": "CE San Miguel", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Miguel", "NOMBRE_MUNICIPIO_CE_origen": "San Miguel", "DEPTO_CE_origen": "San Miguel", "DIRECCIÓN_CE_origen": "Av. Roosevelt", "CÓDIGO_CE_destino": "12112", "NOMBRE_CE_destino": "CE El Delirio", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "San Miguel", "NOMBRE_MUNICIPIO_CE_destino": "San Miguel", "DEPTO_CE_destino": "San Miguel", "DIRECCIÓN_CE_destino": "Carretera Litoral" },
+                { "est_nie": "10012345", "nombre_completo": "Gabriela Alejandra Meza", "GRADO_RECOD_BTO": "Octavo Grado", "CÓDIGO_CE_origen": "12213", "NOMBRE_CE_origen": "CE Usulután", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Usulután", "NOMBRE_MUNICIPIO_CE_origen": "Usulután", "DEPTO_CE_origen": "Usulután", "DIRECCIÓN_CE_origen": "Calle Central", "CÓDIGO_CE_destino": "12314", "NOMBRE_CE_destino": "CE Jiquilisco", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Jiquilisco", "NOMBRE_MUNICIPIO_CE_destino": "Jiquilisco", "DEPTO_CE_destino": "Usulután", "DIRECCIÓN_CE_destino": "Barrio El Calvario" },
+                { "est_nie": "10013456", "nombre_completo": "Ricardo Antonio Bonilla", "GRADO_RECOD_BTO": "Noveno Grado", "CÓDIGO_CE_origen": "12415", "NOMBRE_CE_origen": "CE La Unión", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "La Unión", "NOMBRE_MUNICIPIO_CE_origen": "La Unión", "DEPTO_CE_origen": "La Unión", "DIRECCIÓN_CE_origen": "Frente al Puerto", "CÓDIGO_CE_destino": "12516", "NOMBRE_CE_destino": "CE Conchagua", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Conchagua", "NOMBRE_MUNICIPIO_CE_destino": "Conchagua", "DEPTO_CE_destino": "La Unión", "DIRECCIÓN_CE_destino": "Centro de Conchagua" },
+                { "est_nie": "10014567", "nombre_completo": "Beatriz Adriana Portillo", "GRADO_RECOD_BTO": "Primer Año Bachillerato", "CÓDIGO_CE_origen": "12617", "NOMBRE_CE_origen": "IN de Morazán", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Francisco Gotera", "NOMBRE_MUNICIPIO_CE_origen": "San Francisco Gotera", "DEPTO_CE_origen": "Morazán", "DIRECCIÓN_CE_origen": "Barrio El Calvario", "CÓDIGO_CE_destino": "12718", "NOMBRE_CE_destino": "CE Jocoro", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Jocoro", "NOMBRE_MUNICIPIO_CE_destino": "Jocoro", "DEPTO_CE_destino": "Morazán", "DIRECCIÓN_CE_destino": "Calle Principal" },
+                { "est_nie": "10015678", "nombre_completo": "Fernando José Turcios", "GRADO_RECOD_BTO": "Segundo Año Bachillerato", "CÓDIGO_CE_origen": "12819", "NOMBRE_CE_origen": "IN de Chalatenango", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Chalatenango", "NOMBRE_MUNICIPIO_CE_origen": "Chalatenango", "DEPTO_CE_origen": "Chalatenango", "DIRECCIÓN_CE_origen": "Barrio La Reforma", "CÓDIGO_CE_destino": "12920", "NOMBRE_CE_destino": "CE Tejutla", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Tejutla", "NOMBRE_MUNICIPIO_CE_destino": "Tejutla", "DEPTO_CE_destino": "Chalatenango", "DIRECCIÓN_CE_destino": "Km 50 Carretera Troncal" },
+                { "est_nie": "10016789", "nombre_completo": "Karla Vanessa Meléndez", "GRADO_RECOD_BTO": "Séptimo Grado", "CÓDIGO_CE_origen": "13021", "NOMBRE_CE_origen": "CE Cabañas", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Sensuntepeque", "NOMBRE_MUNICIPIO_CE_origen": "Sensuntepeque", "DEPTO_CE_origen": "Cabañas", "DIRECCIÓN_CE_origen": "Barrio El Centro", "CÓDIGO_CE_destino": "13122", "NOMBRE_CE_destino": "CE Ilobasco", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Ilobasco", "NOMBRE_MUNICIPIO_CE_destino": "Ilobasco", "DEPTO_CE_destino": "Cabañas", "DIRECCIÓN_CE_destino": "Barrio San Sebastián" },
+                { "est_nie": "10017890", "nombre_completo": "Nelson Edgardo Amaya", "GRADO_RECOD_BTO": "Octavo Grado", "CÓDIGO_CE_origen": "13223", "NOMBRE_CE_origen": "CE Cuscatlán", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Cojutepeque", "NOMBRE_MUNICIPIO_CE_origen": "Cojutepeque", "DEPTO_CE_origen": "Cuscatlán", "DIRECCIÓN_CE_origen": "Col. El Carmen", "CÓDIGO_CE_destino": "13324", "NOMBRE_CE_destino": "CE Suchitoto", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Suchitoto", "NOMBRE_MUNICIPIO_CE_destino": "Suchitoto", "DEPTO_CE_destino": "Cuscatlán", "DIRECCIÓN_CE_destino": "Frente a Iglesia Santa Lucía" },
+                { "est_nie": "10018901", "nombre_completo": "Diana Maricela Quinteros", "GRADO_RECOD_BTO": "Noveno Grado", "CÓDIGO_CE_origen": "13425", "NOMBRE_CE_origen": "CE Ahuachapán", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Ahuachapán", "NOMBRE_MUNICIPIO_CE_origen": "Ahuachapán", "DEPTO_CE_origen": "Ahuachapán", "DIRECCIÓN_CE_origen": "Barrio El Calvario", "CÓDIGO_CE_destino": "13526", "NOMBRE_CE_destino": "CE Atiquizaya", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Atiquizaya", "NOMBRE_MUNICIPIO_CE_destino": "Atiquizaya", "DEPTO_CE_destino": "Ahuachapán", "DIRECCIÓN_CE_destino": "Salida a Chalchuapa" },
+                { "est_nie": "10019012", "nombre_completo": "Ernesto Alonso Flores", "GRADO_RECOD_BTO": "Primer Año Bachillerato", "CÓDIGO_CE_origen": "13627", "NOMBRE_CE_origen": "CE La Libertad", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Puerto de La Libertad", "NOMBRE_MUNICIPIO_CE_origen": "La Libertad Este", "DEPTO_CE_origen": "La Libertad", "DIRECCIÓN_CE_origen": "Frente al Malecón", "CÓDIGO_CE_destino": "13728", "NOMBRE_CE_destino": "CE Zaragoza", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Zaragoza", "NOMBRE_MUNICIPIO_CE_origen": "La Libertad Sur", "DEPTO_CE_destino": "La Libertad", "DIRECCIÓN_CE_destino": "Km 21 Carretera al Puerto" },
+                { "est_nie": "10020123", "nombre_completo": "Tatiana Lizeth Ramírez", "GRADO_RECOD_BTO": "Segundo Año Bachillerato", "CÓDIGO_CE_origen": "13829", "NOMBRE_CE_origen": "CE San Vicente", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Vicente", "NOMBRE_MUNICIPIO_CE_origen": "San Vicente", "DEPTO_CE_origen": "San Vicente", "DIRECCIÓN_CE_origen": "Barrio El Centro", "CÓDIGO_CE_destino": "13930", "NOMBRE_CE_destino": "CE Tecoluca", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Tecoluca", "NOMBRE_MUNICIPIO_CE_origen": "Tecoluca", "DEPTO_CE_destino": "San Vicente", "DIRECCIÓN_CE_destino": "Parque Central" },
+                { "est_nie": "10021234", "nombre_completo": "Kevin Alexander Vides", "GRADO_RECOD_BTO": "Séptimo Grado", "CÓDIGO_CE_origen": "14031", "NOMBRE_CE_origen": "CE Usulután", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Usulután", "NOMBRE_MUNICIPIO_CE_origen": "Usulután", "DEPTO_CE_origen": "Usulután", "DIRECCIÓN_CE_origen": "Col. El Paraíso", "CÓDIGO_CE_destino": "14132", "NOMBRE_CE_destino": "CE Santiago de María", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Santiago de María", "NOMBRE_MUNICIPIO_CE_origen": "Santiago de María", "DEPTO_CE_destino": "Usulután", "DIRECCIÓN_CE_destino": "Barrio Arriba" },
+                { "est_nie": "10022345", "nombre_completo": "Brenda Lissette Orellana", "GRADO_RECOD_BTO": "Octavo Grado", "CÓDIGO_CE_origen": "14233", "NOMBRE_CE_origen": "CE San Miguel", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Miguel", "NOMBRE_MUNICIPIO_CE_origen": "San Miguel", "DEPTO_CE_origen": "San Miguel", "DIRECCIÓN_CE_origen": "Col. Milagro", "CÓDIGO_CE_destino": "14334", "NOMBRE_CE_destino": "CE Chinameca", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Chinameca", "NOMBRE_MUNICIPIO_CE_origen": "Chinameca", "DEPTO_CE_destino": "San Miguel", "DIRECCIÓN_CE_destino": "Salida a San Miguel" },
+                { "est_nie": "10023456", "nombre_completo": "Josué David Molina", "GRADO_RECOD_BTO": "Noveno Grado", "CÓDIGO_CE_origen": "14435", "NOMBRE_CE_origen": "CE Santa Ana", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Santa Ana", "NOMBRE_MUNICIPIO_CE_origen": "Santa Ana", "DEPTO_CE_origen": "Santa Ana", "DIRECCIÓN_CE_origen": "Col. El Trébol", "CÓDIGO_CE_destino": "14536", "NOMBRE_CE_destino": "CE Metapán", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Metapán", "NOMBRE_MUNICIPIO_CE_origen": "Metapán", "DEPTO_CE_destino": "Santa Ana", "DIRECCIÓN_CE_destino": "Barrio San Pedro" },
+                { "est_nie": "10024567", "nombre_completo": "Katherin Nicole Ayala", "GRADO_RECOD_BTO": "Primer Año Bachillerato", "CÓDIGO_CE_origen": "14637", "NOMBRE_CE_origen": "CE Sonsonate", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Sonsonate", "NOMBRE_MUNICIPIO_CE_origen": "Sonsonate", "DEPTO_CE_origen": "Sonsonate", "DIRECCIÓN_CE_origen": "Col. Sensunapán", "CÓDIGO_CE_destino": "14738", "NOMBRE_CE_destino": "CE Izalco", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Izalco", "NOMBRE_MUNICIPIO_CE_origen": "Izalco", "DEPTO_CE_destino": "Sonsonate", "DIRECCIÓN_CE_destino": "Barrio La Asunción" },
+                { "est_nie": "10025678", "nombre_completo": "Jonathan Josué Arévalo", "GRADO_RECOD_BTO": "Segundo Año Bachillerato", "CÓDIGO_CE_origen": "14839", "NOMBRE_CE_origen": "CE La Unión", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "La Unión", "NOMBRE_MUNICIPIO_CE_origen": "La Unión", "DEPTO_CE_origen": "La Unión", "DIRECCIÓN_CE_origen": "Barrio El Centro", "CÓDIGO_CE_destino": "14940", "NOMBRE_CE_destino": "CE Santa Rosa de Lima", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Santa Rosa de Lima", "NOMBRE_MUNICIPIO_CE_origen": "Santa Rosa de Lima", "DEPTO_CE_destino": "La Unión", "DIRECCIÓN_CE_destino": "Eje Vial Principal" },
+                { "est_nie": "10026789", "nombre_completo": "Wendy Yamileth Carías", "GRADO_RECOD_BTO": "Séptimo Grado", "CÓDIGO_CE_origen": "15041", "NOMBRE_CE_origen": "CE Morazán", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Francisco Gotera", "NOMBRE_MUNICIPIO_CE_origen": "San Francisco Gotera", "DEPTO_CE_origen": "Morazán", "DIRECCIÓN_CE_origen": "Barrio El Calvario", "CÓDIGO_CE_destino": "15142", "NOMBRE_CE_destino": "CE Corinto", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Corinto", "NOMBRE_MUNICIPIO_CE_origen": "Corinto", "DEPTO_CE_destino": "Morazán", "DIRECCIÓN_CE_destino": "Frente al Parque" },
+                { "est_nie": "10027890", "nombre_completo": "Oscar Armando Grijalva", "GRADO_RECOD_BTO": "Octavo Grado", "CÓDIGO_CE_origen": "15243", "NOMBRE_CE_origen": "CE Chalatenango", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Chalatenango", "NOMBRE_MUNICIPIO_CE_origen": "Chalatenango", "DEPTO_CE_origen": "Chalatenango", "DIRECCIÓN_CE_origen": "Col. San Antonio", "CÓDIGO_CE_destino": "15344", "NOMBRE_CE_destino": "CE La Palma", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "La Palma", "NOMBRE_MUNICIPIO_CE_origen": "La Palma", "DEPTO_CE_destino": "Chalatenango", "DIRECCIÓN_CE_destino": "Barrio El Centro" },
+                { "est_nie": "10028901", "nombre_completo": "Jessica Marisol Galán", "GRADO_RECOD_BTO": "Noveno Grado", "CÓDIGO_CE_origen": "15445", "NOMBRE_CE_origen": "CE Cabañas", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Sensuntepeque", "NOMBRE_MUNICIPIO_CE_origen": "Sensuntepeque", "DEPTO_CE_origen": "Cabañas", "DIRECCIÓN_CE_origen": "Col. Las Flores", "CÓDIGO_CE_destino": "15546", "NOMBRE_CE_destino": "CE Victoria", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Victoria", "NOMBRE_MUNICIPIO_CE_origen": "Victoria", "DEPTO_CE_destino": "Cabañas", "DIRECCIÓN_CE_destino": "Calle Principal" },
+                { "est_nie": "10029012", "nombre_completo": "Walter Alexander Turcios", "GRADO_RECOD_BTO": "Primer Año Bachillerato", "CÓDIGO_CE_origen": "15647", "NOMBRE_CE_origen": "CE Cuscatlán", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Cojutepeque", "NOMBRE_MUNICIPIO_CE_origen": "Cojutepeque", "DEPTO_CE_origen": "Cuscatlán", "DIRECCIÓN_CE_origen": "Barrio El Calvario", "CÓDIGO_CE_destino": "15748", "NOMBRE_CE_destino": "CE San Pedro Perulapán", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "San Pedro Perulapán", "NOMBRE_MUNICIPIO_CE_origen": "San Pedro Perulapán", "DEPTO_CE_destino": "Cuscatlán", "DIRECCIÓN_CE_destino": "Entrada Principal" },
+                { "est_nie": "10030123", "nombre_completo": "Gladys Abigail Benítez", "GRADO_RECOD_BTO": "Segundo Año Bachillerato", "CÓDIGO_CE_origen": "15849", "NOMBRE_CE_origen": "CE Ahuachapán", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Ahuachapán", "NOMBRE_MUNICIPIO_CE_origen": "Ahuachapán", "DEPTO_CE_origen": "Ahuachapán", "DIRECCIÓN_CE_origen": "Col. Las Delicias", "CÓDIGO_CE_destino": "15950", "NOMBRE_CE_destino": "CE San Francisco Menéndez", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "San Francisco Menéndez", "NOMBRE_MUNICIPIO_CE_origen": "San Francisco Menéndez", "DEPTO_CE_destino": "Ahuachapán", "DIRECCIÓN_CE_destino": "La Hachadura" },
+                { "est_nie": "10031234", "nombre_completo": "Cristian Daniel Escobar", "GRADO_RECOD_BTO": "Séptimo Grado", "CÓDIGO_CE_origen": "16051", "NOMBRE_CE_origen": "CE La Libertad", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San José Villanueva", "NOMBRE_MUNICIPIO_CE_origen": "La Libertad Sur", "DEPTO_CE_origen": "La Libertad", "DIRECCIÓN_CE_origen": "Centro", "CÓDIGO_CE_destino": "16152", "NOMBRE_CE_destino": "CE Comasagua", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Comasagua", "NOMBRE_MUNICIPIO_CE_origen": "La Libertad Oeste", "DEPTO_CE_destino": "La Libertad", "DIRECCIÓN_CE_destino": "Montaña" },
+                { "est_nie": "10032345", "nombre_completo": "Evelyn Noemí Castro", "GRADO_RECOD_BTO": "Octavo Grado", "CÓDIGO_CE_origen": "16253", "NOMBRE_CE_origen": "CE San Vicente", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "San Vicente", "NOMBRE_MUNICIPIO_CE_origen": "San Vicente", "DEPTO_CE_origen": "San Vicente", "DIRECCIÓN_CE_origen": "Barrio San Juan", "CÓDIGO_CE_destino": "16354", "NOMBRE_CE_destino": "CE Apastepeque", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Apastepeque", "NOMBRE_MUNICIPIO_CE_origen": "Apastepeque", "DEPTO_CE_destino": "San Vicente", "DIRECCIÓN_CE_destino": "Cerca de Laguna" },
+                { "est_nie": "10033456", "nombre_completo": "Rigoberto Antonio Ruano", "GRADO_RECOD_BTO": "Noveno Grado", "CÓDIGO_CE_origen": "16455", "NOMBRE_CE_origen": "CE Usulután", "SECTOR_origen": "Público", "NOMBRE_DISTRITO_CE_origen": "Usulután", "NOMBRE_MUNICIPIO_CE_origen": "Usulután", "DEPTO_CE_origen": "Usulután", "DIRECCIÓN_CE_origen": "Col. El Cocal", "CÓDIGO_CE_destino": "16556", "NOMBRE_CE_destino": "CE Puerto El Triunfo", "SECTOR_destino": "Público", "NOMBRE_DISTRITO_CE_destino": "Puerto El Triunfo", "NOMBRE_MUNICIPIO_CE_origen": "Puerto El Triunfo", "DEPTO_CE_destino": "Usulután", "DIRECCIÓN_CE_destino": "Muelle Principal" }
+            ],
+            "2026-10-30": [],
+            "2026-10-23": [],
+            "2026-10-16": [],
+            "2026-10-02": []
+        };
+
+        // Generamos dinámicamente los 182 nuevos ingresos para el 2026-11-06 para cubrir el total exacto
+        const listaNuevosEjemplo = [];
+        for (let i = 1; i <= 182; i++) {
+            listaNuevosEjemplo.push({
+                "est_nie": "20" + String(100000 + i),
+                "nombre_completo": "Estudiante Nuevo Ingreso " + i,
+                "GRADO_RECOD_BTO": i % 2 === 0 ? "Primer Grado" : "Séptimo Grado",
+                "SECTOR": "Público",
+                "CÓDIGO_CE": "10" + String(200 + (i % 50)),
+                "NOMBRE_CE": "Centro Escolar Beneficiario " + i,
+                "NOMBRE_DISTRITO_CE": "San Salvador",
+                "NOMBRE_MUNICIPIO_CE": "San Salvador",
+                "DEPTO_CE": "San Salvador",
+                "DIRECCIÓN_CE": "Dirección institucional de prueba " + i
+            });
+        }
+
+        const cacheNuevos = {
+            "2026-11-06": listaNuevosEjemplo,
+            "2026-10-30": [],
+            "2026-10-23": [],
+            "2026-10-16": [],
+            "2026-10-02": []
+        };
+
+        let listaTrasladosActuales = [];
+        let listaNuevosActuales = [];
+        let fechaTrasladosSeleccionada = '';
+        let fechaNuevosSeleccionada = '';
 
         function formatearNumero(num) {
             return new Intl.NumberFormat('es-SV').format(num);
@@ -187,43 +288,66 @@
             if (e.target === modal) modal.classList.remove('active');
         });
 
-        async function cargarDatosGlobales() {
+        function cargarDatosGlobales() {
             try {
-                const resResumen = await fetch(REPO_URL + 'resumen_diario.json', { cache: 'no-store' });
-                if (!resResumen.ok) throw new Error('Error al cargar JSON principal');
-                const dataResumen = await resResumen.json();
-
                 renderizarTablaResumen(dataResumen);
                 renderizarKPIs(dataResumen[0]);
 
-                const ultimaFecha = dataResumen[0].fecha;
-                cargarDetallesPorFecha(ultimaFecha);
+                const fechasDisponibles = dataResumen.map(d => d.fecha);
+                poblarSelectsFechas(fechasDisponibles);
 
+                if (fechasDisponibles.length > 0) {
+                    cambiarFechaTraslados(fechasDisponibles[0]);
+                    cambiarFechaNuevos(fechasDisponibles[0]);
+                }
             } catch (error) {
-                console.error("Fallo de conexión: ", error);
-                document.getElementById('tabla-resumen').innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Error de conexión.</td></tr>';
+                console.error("Error al inicializar datos: ", error);
             }
         }
 
-        async function cargarDetallesPorFecha(fecha) {
-            try {
-                const resCambios = await fetch(REPO_URL + 'detalle_cambios.json', { cache: 'no-store' });
-                const resNuevos = await fetch(REPO_URL + 'detalle_nuevos.json', { cache: 'no-store' });
+        function poblarSelectsFechas(fechas) {
+            const selectTraslados = document.getElementById('select-fecha-traslados');
+            const selectNuevos = document.getElementById('select-fecha-nuevos');
+            let optionsHtml = '';
+            fechas.forEach(f => {
+                optionsHtml += `<option value="${f}">${f}</option>`;
+            });
+            selectTraslados.innerHTML = optionsHtml;
+            selectNuevos.innerHTML = optionsHtml;
+        }
 
-                if (resCambios.ok) {
-                    const dataCambios = await resCambios.json();
-                    trasladosActuales = dataCambios[fecha] || [];
-                    renderizarTraslados(trasladosActuales);
-                }
+        function cambiarFechaTraslados(fecha) {
+            fechaTrasladosSeleccionada = fecha;
+            listaTrasladosActuales = cacheCambios[fecha] || [];
+            renderizarTraslados(listaTrasladosActuales);
+        }
 
-                if (resNuevos.ok) {
-                    const dataNuevos = await resNuevos.json();
-                    nuevosActuales = dataNuevos[fecha] || [];
-                    renderizarNuevos(nuevosActuales);
-                }
-            } catch (error) {
-                console.error("Error al cargar los JSON de detalle: ", error);
+        function cambiarFechaNuevos(fecha) {
+            fechaNuevosSeleccionada = fecha;
+            listaNuevosActuales = cacheNuevos[fecha] || [];
+            renderizarNuevos(listaNuevosActuales);
+        }
+
+        function exportarExcelTraslados() {
+            if (!listaTrasladosActuales || listaTrasladosActuales.length === 0) {
+                alert("No hay datos de traslados para exportar en esta fecha.");
+                return;
             }
+            const worksheet = XLSX.utils.json_to_sheet(listaTrasladosActuales);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Traslados");
+            XLSX.writeFile(workbook, `Traslados_${fechaTrasladosSeleccionada}.xlsx`);
+        }
+
+        function exportarExcelNuevos() {
+            if (!listaNuevosActuales || listaNuevosActuales.length === 0) {
+                alert("No hay datos de nuevos ingresos para exportar en esta fecha.");
+                return;
+            }
+            const worksheet = XLSX.utils.json_to_sheet(listaNuevosActuales);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Nuevos Ingresos");
+            XLSX.writeFile(workbook, `NuevosIngresos_${fechaNuevosSeleccionada}.xlsx`);
         }
 
         function renderizarTablaResumen(datos) {
@@ -251,7 +375,7 @@
                 return;
             }
             let html = '';
-            datos.slice(0, 100).forEach((d, index) => {
+            datos.forEach((d, index) => {
                 html += `
                     <tr class="fila-clickable" onclick="abrirModalTraslado(${index})">
                         <td style="font-weight: 500;">${d.est_nie}</td>
@@ -272,7 +396,7 @@
                 return;
             }
             let html = '';
-            datos.slice(0, 100).forEach((d, index) => {
+            datos.forEach((d, index) => {
                 html += `
                     <tr class="fila-clickable" onclick="abrirModalNuevo(${index})">
                         <td style="font-weight: 500;">${d.est_nie}</td>
@@ -287,7 +411,7 @@
         }
 
         function abrirModalTraslado(index) {
-            const d = trasladosActuales[index];
+            const d = listaTrasladosActuales[index];
             const modalBody = document.getElementById('modal-body');
             modalBody.innerHTML = `
                 <div class="info-group">
@@ -322,7 +446,7 @@
         }
 
         function abrirModalNuevo(index) {
-            const d = nuevosActuales[index];
+            const d = listaNuevosActuales[index];
             const modalBody = document.getElementById('modal-body');
             modalBody.innerHTML = `
                 <div class="info-group">

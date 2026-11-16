@@ -1,3 +1,32 @@
+# ============================================================
+# Procesar_csv.py
+# ------------------------------------------------------------
+# Pipeline de generación de datos para el dashboard
+# "Logística de Uniformes 2027 | MINEDUCYT".
+#
+# Qué hace:
+#   1. Pide al usuario un CSV de matrícula (corte actual).
+#   2. Detecta automáticamente el corte anterior por nombre.
+#   3. Calcula nuevos ingresos y traslados por NIE.
+#   4. Cruza con "Tallado Sí.xlsx" para marcar tallado (Sí/No).
+#   5. Actualiza 3 JSON en 03_dashboard/:
+#        - resumen_diario.json
+#        - detalle_cambios.json
+#        - detalle_nuevos.json
+#   6. Hace git add/commit/push del repo.
+#
+# Dependencias:
+#   pip install pandas openpyxl
+#
+# Estructura esperada:
+#   RAIZ/
+#     01_originales/
+#        matricula_al_DDMMYYYY_normalizado.csv   (cortes)
+#        Tallado Sí.xlsx                          (nie, tallado)
+#     03_dashboard/                               (salida JSON)
+#     Procesar_csv.py                             (este script)
+# ============================================================
+
 import os
 import re
 import json
@@ -14,6 +43,7 @@ import subprocess
 RAIZ = Path(__file__).parent.resolve()
 ORIGINALES = RAIZ / "01_originales"
 DASHBOARD = RAIZ / "03_dashboard"
+TALLADO_XLSX = ORIGINALES / "Tallado Sí.xlsx"
 
 COLUMNAS = [
     'est_nie', 'est_nombre1', 'est_nombre2', 'est_nombre3',
@@ -77,6 +107,51 @@ def cargar_archivos():
 
     return Path(ruta_actual), ruta_anterior, fecha_str_iso
 
+# ============================================
+# TALLADO
+# ============================================
+def cargar_tallados():
+    """Devuelve un set con los NIE que tienen 'si' en la columna tallado."""
+    if not TALLADO_XLSX.exists():
+        print(f"⚠ No se encontró '{TALLADO_XLSX.name}'. Se asumirá 'No' para todos.")
+        return set()
+
+    try:
+        df = pd.read_excel(TALLADO_XLSX, dtype=str)
+    except Exception as e:
+        print(f"⚠ Error al leer '{TALLADO_XLSX.name}': {e}. Se asumirá 'No' para todos.")
+        return set()
+
+    df.columns = [str(c).strip().lower() for c in df.columns]
+
+    if 'nie' not in df.columns or 'tallado' not in df.columns:
+        print(f"⚠ El Excel de tallado debe tener columnas 'nie' y 'tallado'. Encontradas: {list(df.columns)}")
+        return set()
+
+    mask = df['tallado'].fillna('').astype(str).str.strip().str.lower().isin(['si', 'sí', 's'])
+    tallados = set(df.loc[mask, 'nie'].fillna('').astype(str).str.strip())
+    tallados.discard('')
+    print(f"Tallados cargados desde Excel: {len(tallados)}")
+    return tallados
+
+def marcar_tallado(df, tallados):
+    """Añade columna 'tallado' con 'Sí' / 'No' a un DataFrame."""
+    if df is None:
+        return None
+    df = df.copy()
+    df['tallado'] = df['est_nie'].fillna('').astype(str).str.strip().isin(tallados).map({True: 'Sí', False: 'No'})
+    return df
+
+def calcular_totales_tallado(df_actual, tallados):
+    """Devuelve (n_tallados, n_no_tallados) sobre la matrícula actual."""
+    serie = df_actual['est_nie'].fillna('').astype(str).str.strip()
+    n_tallados = int(serie.isin(tallados).sum())
+    total = len(df_actual)
+    return n_tallados, total - n_tallados
+
+# ============================================
+# PROCESAMIENTO
+# ============================================
 def procesar_datos(ruta_actual, ruta_anterior):
     print("\nCargando archivo actual...")
     df_actual = pd.read_csv(ruta_actual, usecols=COLUMNAS, dtype=str, encoding='utf-8', low_memory=False)
@@ -94,7 +169,7 @@ def procesar_datos(ruta_actual, ruta_anterior):
 
     if not ruta_anterior:
         print("\nFase de Inicialización: No hay archivo anterior para comparar.")
-        return total_actual, total_publico, total_privado, None, None
+        return total_actual, total_publico, total_privado, None, None, df_actual
 
     print("\nCargando archivo anterior para comparación...")
     cols_anterior = ['est_nie', 'CÓDIGO_CE', 'NOMBRE_CE', 'SECTOR', 'DEPTO_CE', 'NOMBRE_MUNICIPIO_CE', 'NOMBRE_DISTRITO_CE', 'DIRECCIÓN_CE']
@@ -107,9 +182,13 @@ def procesar_datos(ruta_actual, ruta_anterior):
     df_cambios = df_comun[df_comun['CÓDIGO_CE_destino'] != df_comun['CÓDIGO_CE_origen']].copy()
     print(f"Cambios de centro detectados: {len(df_cambios)}")
 
-    return total_actual, total_publico, total_privado, df_cambios, df_nuevos
+    return total_actual, total_publico, total_privado, df_cambios, df_nuevos, df_actual
 
-def exportar_json(fecha_str, total_actual, total_publico, total_privado, df_cambios, df_nuevos):
+# ============================================
+# EXPORTACIÓN
+# ============================================
+def exportar_json(fecha_str, total_actual, total_publico, total_privado,
+                  df_cambios, df_nuevos, total_tallados, total_no_tallados):
     DASHBOARD.mkdir(parents=True, exist_ok=True)
 
     ruta_resumen = DASHBOARD / "resumen_diario.json"
@@ -127,7 +206,9 @@ def exportar_json(fecha_str, total_actual, total_publico, total_privado, df_camb
         "publico": int(total_publico),
         "privado": int(total_privado),
         "cambios": int(len(df_cambios)) if df_cambios is not None else 0,
-        "nuevos": int(len(df_nuevos)) if df_nuevos is not None else 0
+        "nuevos": int(len(df_nuevos)) if df_nuevos is not None else 0,
+        "tallados": int(total_tallados),
+        "no_tallados": int(total_no_tallados),
     }
     resumen.append(nuevo_resumen)
     resumen.sort(key=lambda x: x['fecha'], reverse=True)
@@ -163,7 +244,7 @@ def sincronizar_con_github():
     print("\nSincronizando con GitHub (vía Git local)...")
     try:
         repo_path = str(RAIZ)
-        subprocess.run(["git", "-C", repo_path, "add", "."], check=True)
+        subprocess.run(["git", "-C", repo_path, "add", "03_dashboard/", "index.html", "Procesar_csv.py"], check=True)
         mensaje_commit = f"Actualización automática de JSON {datetime.now().strftime('%Y-%m-%d %H:%M')}"
         subprocess.run(["git", "-C", repo_path, "commit", "-m", mensaje_commit], check=True)
         subprocess.run(["git", "-C", repo_path, "push"], check=True)
@@ -173,9 +254,20 @@ def sincronizar_con_github():
     except Exception as e:
         print(f"Error inesperado al sincronizar con GitHub: {e}")
 
+# ============================================
+# MAIN
+# ============================================
 if __name__ == "__main__":
     actual, anterior, fecha_str = cargar_archivos()
     if actual:
-        t_act, t_pub, t_pri, df_cam, df_nue = procesar_datos(actual, anterior)
-        exportar_json(fecha_str, t_act, t_pub, t_pri, df_cam, df_nue)
+        t_act, t_pub, t_pri, df_cam, df_nue, df_actual = procesar_datos(actual, anterior)
+
+        tallados = cargar_tallados()
+        df_cam = marcar_tallado(df_cam, tallados)
+        df_nue = marcar_tallado(df_nue, tallados)
+        n_tall, n_no_tall = calcular_totales_tallado(df_actual, tallados)
+
+        print(f"Tallados en matrícula actual: {n_tall} | No tallados: {n_no_tall}")
+
+        exportar_json(fecha_str, t_act, t_pub, t_pri, df_cam, df_nue, n_tall, n_no_tall)
         sincronizar_con_github()
