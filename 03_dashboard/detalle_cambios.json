@@ -11499,7 +11499,8 @@
       "DEPTO_CE_origen": "USULUTÁN",
       "NOMBRE_MUNICIPIO_CE_origen": "USULUTÁN_OESTE",
       "NOMBRE_DISTRITO_CE_origen": "JIQUILISCO",
-      "DIRECCIÓN_CE_origen": "CASERIO EL MARTILLO, CANTON SAN JOSE, J%2FJIQUILISCO, USULUTAN"
+      "DIRECCIÓN_CE_origen": "CASERIO EL MARTILLO, CANTON SAN JOSE, J%2FJIQUILISCO, USULUTAN",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10135140",
@@ -11518,7 +11519,8 @@
       "DEPTO_CE_origen": "LA PAZ",
       "NOMBRE_MUNICIPIO_CE_origen": "LA PAZ_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SANTIAGO NONUALCO",
-      "DIRECCIÓN_CE_origen": "CASERIO SANTA RITA,CANTON LAS GUARUMAS, J%2F SANTIAGO NONUALCO, LA PAZ"
+      "DIRECCIÓN_CE_origen": "CASERIO SANTA RITA,CANTON LAS GUARUMAS, J%2F SANTIAGO NONUALCO, LA PAZ",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10225057",
@@ -11537,7 +11539,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "CUSCATANCINGO",
-      "DIRECCIÓN_CE_origen": "AVENIDA PRINCESA SHASCA, CALLE GOASCORAN, CIUDAD FUTURA FASE DOS"
+      "DIRECCIÓN_CE_origen": "AVENIDA PRINCESA SHASCA, CALLE GOASCORAN, CIUDAD FUTURA FASE DOS",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10329602",
@@ -11556,7 +11559,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "TONACATEPEQUE",
-      "DIRECCIÓN_CE_origen": "1A CALLE PONIENTE BARRIO SAN NICOLAS, TONACATEPEQUE, SAN SALVADOR"
+      "DIRECCIÓN_CE_origen": "1A CALLE PONIENTE BARRIO SAN NICOLAS, TONACATEPEQUE, SAN SALVADOR",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10396999",
@@ -11575,7 +11579,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "TONACATEPEQUE",
-      "DIRECCIÓN_CE_origen": "1A CALLE PONIENTE BARRIO SAN NICOLAS, TONACATEPEQUE, SAN SALVADOR"
+      "DIRECCIÓN_CE_origen": "1A CALLE PONIENTE BARRIO SAN NICOLAS, TONACATEPEQUE, SAN SALVADOR",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10520536",
@@ -11594,7 +11599,8 @@
       "DEPTO_CE_origen": "LA LIBERTAD",
       "NOMBRE_MUNICIPIO_CE_origen": "LA LIBERTAD_OESTE",
       "NOMBRE_DISTRITO_CE_origen": "TALNIQUE",
-      "DIRECCIÓN_CE_origen": "CALLE AL CANTON LOS SITIOS FRENTE A FINCA MATAZANO, J/ TALNIQUE, LA LIBERTAD"
+      "DIRECCIÓN_CE_origen": "CALLE AL CANTON LOS SITIOS FRENTE A FINCA MATAZANO, J/ TALNIQUE, LA LIBERTAD",
+      "tallado": "No"
     },
     {
       "est_nie": "10558674",
@@ -11613,7 +11619,8 @@
       "DEPTO_CE_origen": "SONSONATE",
       "NOMBRE_MUNICIPIO_CE_origen": "SONSONATE_NORTE",
       "NOMBRE_DISTRITO_CE_origen": "NAHUIZALCO",
-      "DIRECCIÓN_CE_origen": "3ª AVENIDA NORTE Y 1ª CALLE PONIENTE, BARRIO LA TRINIDAD, NAHUIZALCO"
+      "DIRECCIÓN_CE_origen": "3ª AVENIDA NORTE Y 1ª CALLE PONIENTE, BARRIO LA TRINIDAD, NAHUIZALCO",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10624936",
@@ -11632,7 +11639,8 @@
       "DEPTO_CE_origen": "SAN MIGUEL",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN MIGUEL_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SAN MIGUEL",
-      "DIRECCIÓN_CE_origen": "CANTON EL PAPALON, SAN MIGUEL."
+      "DIRECCIÓN_CE_origen": "CANTON EL PAPALON, SAN MIGUEL.",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10653299",
@@ -11651,7 +11659,8 @@
       "DEPTO_CE_origen": "SANTA ANA",
       "NOMBRE_MUNICIPIO_CE_origen": "SANTA ANA_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SANTA ANA",
-      "DIRECCIÓN_CE_origen": "3A. AVENIDA SUR ENTRE 15 Y 17 CALLE  ORIENTE Nº  70 STA. ANA, STA. ANA"
+      "DIRECCIÓN_CE_origen": "3A. AVENIDA SUR ENTRE 15 Y 17 CALLE  ORIENTE Nº  70 STA. ANA, STA. ANA",
+      "tallado": "No"
     },
     {
       "est_nie": "10653940",
@@ -11670,7 +11679,8 @@
       "DEPTO_CE_origen": "SAN MIGUEL",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN MIGUEL_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SAN MIGUEL",
-      "DIRECCIÓN_CE_origen": "CANTON EL PAPALON, SAN MIGUEL."
+      "DIRECCIÓN_CE_origen": "CANTON EL PAPALON, SAN MIGUEL.",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10667341",
@@ -11689,7 +11699,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "ILOPANGO",
-      "DIRECCIÓN_CE_origen": "BOULEVARD LAS PAVAS, CIMA 1,  ILOPANGO, SAN SALVADOR"
+      "DIRECCIÓN_CE_origen": "BOULEVARD LAS PAVAS, CIMA 1,  ILOPANGO, SAN SALVADOR",
+      "tallado": "No"
     },
     {
       "est_nie": "10721326",
@@ -11708,7 +11719,8 @@
       "DEPTO_CE_origen": "SANTA ANA",
       "NOMBRE_MUNICIPIO_CE_origen": "SANTA ANA_NORTE",
       "NOMBRE_DISTRITO_CE_origen": "METAPÁN",
-      "DIRECCIÓN_CE_origen": "CASERIO EL DESAGUE, CANTON BELEN GUIJAT"
+      "DIRECCIÓN_CE_origen": "CASERIO EL DESAGUE, CANTON BELEN GUIJAT",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10744586",
@@ -11727,7 +11739,8 @@
       "DEPTO_CE_origen": "LA LIBERTAD",
       "NOMBRE_MUNICIPIO_CE_origen": "LA LIBERTAD_COSTA",
       "NOMBRE_DISTRITO_CE_origen": "LA LIBERTAD",
-      "DIRECCIÓN_CE_origen": "CANTON MELARA, KILOMETRO 48 1%2F2 CARRETERA A COMALAPA, J%2F LA LIBERTAD, LA LIBERTAD"
+      "DIRECCIÓN_CE_origen": "CANTON MELARA, KILOMETRO 48 1%2F2 CARRETERA A COMALAPA, J%2F LA LIBERTAD, LA LIBERTAD",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10790231",
@@ -11746,7 +11759,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_OESTE",
       "NOMBRE_DISTRITO_CE_origen": "NEJAPA",
-      "DIRECCIÓN_CE_origen": "CANTON ALDEA DE LAS MERCEDES, NEJAPA, SAN SALVADOR"
+      "DIRECCIÓN_CE_origen": "CANTON ALDEA DE LAS MERCEDES, NEJAPA, SAN SALVADOR",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10791579",
@@ -11765,7 +11779,8 @@
       "DEPTO_CE_origen": "LA LIBERTAD",
       "NOMBRE_MUNICIPIO_CE_origen": "LA LIBERTAD_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SAN JUAN OPICO",
-      "DIRECCIÓN_CE_origen": "CARRET. A QUEZALTEPEQUE, CANTON CHANMICO, J%2F SAN JUAN OPICO, LA LIBERTAD"
+      "DIRECCIÓN_CE_origen": "CARRET. A QUEZALTEPEQUE, CANTON CHANMICO, J%2F SAN JUAN OPICO, LA LIBERTAD",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10792309",
@@ -11784,7 +11799,8 @@
       "DEPTO_CE_origen": "LA LIBERTAD",
       "NOMBRE_MUNICIPIO_CE_origen": "LA LIBERTAD_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SAN JUAN OPICO",
-      "DIRECCIÓN_CE_origen": "CARRET. A QUEZALTEPEQUE, CANTON CHANMICO, J%2F SAN JUAN OPICO, LA LIBERTAD"
+      "DIRECCIÓN_CE_origen": "CARRET. A QUEZALTEPEQUE, CANTON CHANMICO, J%2F SAN JUAN OPICO, LA LIBERTAD",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10833211",
@@ -11803,7 +11819,8 @@
       "DEPTO_CE_origen": "CABAÑAS",
       "NOMBRE_MUNICIPIO_CE_origen": "CABAÑAS_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "DOLORES",
-      "DIRECCIÓN_CE_origen": "FINAL AV. LIBERTAD, BARRIO EL CALVARIO"
+      "DIRECCIÓN_CE_origen": "FINAL AV. LIBERTAD, BARRIO EL CALVARIO",
+      "tallado": "No"
     },
     {
       "est_nie": "10899700",
@@ -11822,7 +11839,8 @@
       "DEPTO_CE_origen": "USULUTÁN",
       "NOMBRE_MUNICIPIO_CE_origen": "USULUTÁN_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "SANTA ELENA",
-      "DIRECCIÓN_CE_origen": "CANTON EL NISPERAL, J%2FSANTA ELENA, USULUTAN"
+      "DIRECCIÓN_CE_origen": "CANTON EL NISPERAL, J%2FSANTA ELENA, USULUTAN",
+      "tallado": "No"
     },
     {
       "est_nie": "10930509",
@@ -11841,7 +11859,8 @@
       "DEPTO_CE_origen": "LA LIBERTAD",
       "NOMBRE_MUNICIPIO_CE_origen": "LA LIBERTAD_OESTE",
       "NOMBRE_DISTRITO_CE_origen": "COLÓN",
-      "DIRECCIÓN_CE_origen": "URBANIZACION NUEVO LOURDES AV. C, SENDA 7, CANTON HACIENDA NUEVA,"
+      "DIRECCIÓN_CE_origen": "URBANIZACION NUEVO LOURDES AV. C, SENDA 7, CANTON HACIENDA NUEVA,",
+      "tallado": "Sí"
     },
     {
       "est_nie": "10930850",
@@ -11860,7 +11879,8 @@
       "DEPTO_CE_origen": "SONSONATE",
       "NOMBRE_MUNICIPIO_CE_origen": "SONSONATE_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "IZALCO",
-      "DIRECCIÓN_CE_origen": "CASERIO ROSARIO DE CEREN, C%2F JOYA DE CEREN, J%2F IZALCO"
+      "DIRECCIÓN_CE_origen": "CASERIO ROSARIO DE CEREN, C%2F JOYA DE CEREN, J%2F IZALCO",
+      "tallado": "No"
     },
     {
       "est_nie": "10959414",
@@ -11879,7 +11899,8 @@
       "DEPTO_CE_origen": "LA UNIÓN",
       "NOMBRE_MUNICIPIO_CE_origen": "LA UNIÓN_NORTE",
       "NOMBRE_DISTRITO_CE_origen": "SANTA ROSA DE LIMA",
-      "DIRECCIÓN_CE_origen": "AVENIDA FERNANDO BENITEZ, BARRIO LAS DELICIAS, SANTA ROSA DE LIMA, LA UNION"
+      "DIRECCIÓN_CE_origen": "AVENIDA FERNANDO BENITEZ, BARRIO LAS DELICIAS, SANTA ROSA DE LIMA, LA UNION",
+      "tallado": "No"
     },
     {
       "est_nie": "11002608",
@@ -11898,7 +11919,8 @@
       "DEPTO_CE_origen": "USULUTÁN",
       "NOMBRE_MUNICIPIO_CE_origen": "USULUTÁN_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "SAN DIONISIO",
-      "DIRECCIÓN_CE_origen": "BARRIO EL CENTRO, SAN DIONISIO, USULUTAN."
+      "DIRECCIÓN_CE_origen": "BARRIO EL CENTRO, SAN DIONISIO, USULUTAN.",
+      "tallado": "No"
     },
     {
       "est_nie": "11025310",
@@ -11917,7 +11939,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_OESTE",
       "NOMBRE_DISTRITO_CE_origen": "APOPA",
-      "DIRECCIÓN_CE_origen": "CALLE LOS LIRIOS, COLONIA SAN MARTIN  DE PORRES, APOPA, SAN SALVADOR"
+      "DIRECCIÓN_CE_origen": "CALLE LOS LIRIOS, COLONIA SAN MARTIN  DE PORRES, APOPA, SAN SALVADOR",
+      "tallado": "No"
     },
     {
       "est_nie": "11053350",
@@ -11936,7 +11959,8 @@
       "DEPTO_CE_origen": "LA PAZ",
       "NOMBRE_MUNICIPIO_CE_origen": "LA PAZ_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "JERUSALÉN",
-      "DIRECCIÓN_CE_origen": "BARRIO EL CENTRO CALLE MANUEL QUINTANILLA"
+      "DIRECCIÓN_CE_origen": "BARRIO EL CENTRO CALLE MANUEL QUINTANILLA",
+      "tallado": "No"
     },
     {
       "est_nie": "11193742",
@@ -11955,7 +11979,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "ILOPANGO",
-      "DIRECCIÓN_CE_origen": "BOULEVARD LAS PAVAS, CIMA 1,  ILOPANGO, SAN SALVADOR"
+      "DIRECCIÓN_CE_origen": "BOULEVARD LAS PAVAS, CIMA 1,  ILOPANGO, SAN SALVADOR",
+      "tallado": "Sí"
     },
     {
       "est_nie": "11215341",
@@ -11974,7 +11999,8 @@
       "DEPTO_CE_origen": "SANTA ANA",
       "NOMBRE_MUNICIPIO_CE_origen": "SANTA ANA_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SANTA ANA",
-      "DIRECCIÓN_CE_origen": "47 CALLE PONIENTE Y 32 AVENIDA SUR, COLONIA ESPAÑA, CANTON CHUPADEROS"
+      "DIRECCIÓN_CE_origen": "47 CALLE PONIENTE Y 32 AVENIDA SUR, COLONIA ESPAÑA, CANTON CHUPADEROS",
+      "tallado": "No"
     },
     {
       "est_nie": "19726404",
@@ -11993,7 +12019,8 @@
       "DEPTO_CE_origen": "CABAÑAS",
       "NOMBRE_MUNICIPIO_CE_origen": "CABAÑAS_OESTE",
       "NOMBRE_DISTRITO_CE_origen": "ILOBASCO",
-      "DIRECCIÓN_CE_origen": "CENTRO PENAL, AVENIDA CARLOS BONILLA, BARRIO EL CALVARIO N° 3"
+      "DIRECCIÓN_CE_origen": "CENTRO PENAL, AVENIDA CARLOS BONILLA, BARRIO EL CALVARIO N° 3",
+      "tallado": "No"
     },
     {
       "est_nie": "19778452",
@@ -12012,7 +12039,8 @@
       "DEPTO_CE_origen": "CUSCATLÁN",
       "NOMBRE_MUNICIPIO_CE_origen": "CUSCATLÁN_SUR",
       "NOMBRE_DISTRITO_CE_origen": "CANDELARIA",
-      "DIRECCIÓN_CE_origen": "FINAL CALLE MANUEL DÍAZ, CANDELARIA, CUSCATLÁN"
+      "DIRECCIÓN_CE_origen": "FINAL CALLE MANUEL DÍAZ, CANDELARIA, CUSCATLÁN",
+      "tallado": "No"
     },
     {
       "est_nie": "19847733",
@@ -12031,7 +12059,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SAN SALVADOR",
-      "DIRECCIÓN_CE_origen": "POLÍGONO INDUSTRIAL DON BOSCO, COMUNIDAD IBERIA, AVENIDA PERALTA"
+      "DIRECCIÓN_CE_origen": "POLÍGONO INDUSTRIAL DON BOSCO, COMUNIDAD IBERIA, AVENIDA PERALTA",
+      "tallado": "No"
     },
     {
       "est_nie": "20036677",
@@ -12050,7 +12079,8 @@
       "DEPTO_CE_origen": "SAN SALVADOR",
       "NOMBRE_MUNICIPIO_CE_origen": "SAN SALVADOR_CENTRO",
       "NOMBRE_DISTRITO_CE_origen": "SAN SALVADOR",
-      "DIRECCIÓN_CE_origen": "10A. AVENIDA SUR, CALLE ALBERTO SÁNCHEZ Y AVENIDA EL COCAL, Nº 1514 Y 1523, BARRIO SAN JACINTO"
+      "DIRECCIÓN_CE_origen": "10A. AVENIDA SUR, CALLE ALBERTO SÁNCHEZ Y AVENIDA EL COCAL, Nº 1514 Y 1523, BARRIO SAN JACINTO",
+      "tallado": "Sí"
     },
     {
       "est_nie": "20296092",
@@ -12069,7 +12099,8 @@
       "DEPTO_CE_origen": "CABAÑAS",
       "NOMBRE_MUNICIPIO_CE_origen": "CABAÑAS_OESTE",
       "NOMBRE_DISTRITO_CE_origen": "TEJUTEPEQUE",
-      "DIRECCIÓN_CE_origen": "CALLE SALIDA A CINQUERA J%2FTEJUTEPEQUE"
+      "DIRECCIÓN_CE_origen": "CALLE SALIDA A CINQUERA J%2FTEJUTEPEQUE",
+      "tallado": "Sí"
     },
     {
       "est_nie": "20360346",
@@ -12088,7 +12119,8 @@
       "DEPTO_CE_origen": "CABAÑAS",
       "NOMBRE_MUNICIPIO_CE_origen": "CABAÑAS_ESTE",
       "NOMBRE_DISTRITO_CE_origen": "DOLORES",
-      "DIRECCIÓN_CE_origen": "FINAL AV. LIBERTAD, BARRIO EL CALVARIO"
+      "DIRECCIÓN_CE_origen": "FINAL AV. LIBERTAD, BARRIO EL CALVARIO",
+      "tallado": "No"
     }
   ],
   "2026-11-13": []
